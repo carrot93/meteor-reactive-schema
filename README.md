@@ -1,11 +1,18 @@
-meteor-reactive-schema
+ReactiveSchema
 ======================
 
-You don't call schema, schema calls you.
+#### Philosophy: You don't call schema, schema calls you. 
+This is a schema that imbeds itself under your objects via [ReactiveObjects](https://github.com/CMToups/meteor-reactive-objects).
 
+## Instantiation
 
+### Javascript Object
+```
+post = {}
+ReactiveSchema( post, { title: [], content: [] } )
+```
 
-# usage
+### Coffeescript Class
 ```coffee
 class @post  
   constructor: -> 
