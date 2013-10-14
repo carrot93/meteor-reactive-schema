@@ -1,0 +1,12 @@
+{
+  "name": "reactive-schema",
+  "description": "You don't call schema, schema calls you.",
+  "homepage": "https://github.com/CMToups/meteor-reactive-schema",
+  "author": "Conner Meissner Toups",
+  "version": "0.0.1",
+  "git": "https://github.com/CMToups/meteor-reactive-schema.git",
+  "packages": {
+    "reactive-objects": {},
+    "validity": {}
+  }
+}
