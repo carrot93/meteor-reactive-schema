@@ -81,12 +81,12 @@ Assuming `Template.example.post = post`
 
 <!-- You would likely use a handlebars helper to clean this up. -->
 
-{{#if post.valid}}
+{{#unless post.valid}}
   Your post has some errors:
   {{#if post.validationMessages.title}}
     Title {{post.validationMessages.title}}
   {{/if}}
-{{/if}}
+{{/unless}}
 
 ```
 
