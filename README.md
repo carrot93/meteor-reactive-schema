@@ -62,6 +62,7 @@ These are any functions which return `Validity.allow()` or `Validity.deny()`.
 Check out [Validity](https://github.com/CMToups/meteor-validity)  for more details.
 
 Validity, in this package, api : `function (property) {}`
+
 The `this` context is that of your calling object. 
 This so you can get any of the keys values if you wish to test for there existence.
 The inbound `property` var is the name of the key of the property being tested.
