@@ -75,5 +75,19 @@ isString = (property) ->
   Validity.allow()
 ```
 
+### Handlebars example
+Assuming `Template.example.post = post`
+```html
+
+<!-- You would likely use a handlebars helper to clean this up. -->
+
+{{#if post.valid}}
+  Your post has some errors:
+  {{#if post.validationMessages.title}}
+    Title {{post.validationMessages.title}}
+  {{/if}}
+{{/if}}
+
+```
 
 
