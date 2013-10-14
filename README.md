@@ -8,9 +8,9 @@ Just white-list your properties and listen to the reactive `object.valid` method
 ReactiveSchema will also return reasons why the property is invalid. 
 Best yet all the validations are just functions, so they can be a simple or complex as you need them to be.
 
-###  Dependencies
-[ReactiveObjects](https://github.com/CMToups/meteor-reactive-objects)
-[Validity](https://github.com/CMToups/meteor-validity)
+####  Dependencies
+[ReactiveObjects](https://github.com/CMToups/meteor-reactive-objects) <br>
+[Validity](https://github.com/CMToups/meteor-validity) - Can be made a weak dependance on request.
 
 ## Instantiation
 
