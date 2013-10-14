@@ -8,6 +8,10 @@ Just white-list your properties and listen to the reactive `object.valid` method
 ReactiveSchema will also return reasons why the property is invalid. 
 Best yet all the validations are just functions, so they can be a simple or complex as you need them to be.
 
+###  Dependencies
+[ReactiveObjects](https://github.com/CMToups/meteor-reactive-objects)
+[Validity](https://github.com/CMToups/meteor-validity)
+
 ## Instantiation
 
 Create or add a schema to an object, `ReactiveSchema(object_needing_schema, schema)`
@@ -15,16 +19,20 @@ Create or add a schema to an object, `ReactiveSchema(object_needing_schema, sche
 ### Javascript Object
 ```
 post = {}
-ReactiveSchema( post, { title: [], content: [] } )
+schema = { title: [], content: [] }
+ReactiveSchema( post, schema )
 ```
 
 ### Coffeescript Class
 ```coffee
+
+schema =
+  title: []
+  content: []
+
 class @post  
   constructor: -> 
-    ReactiveSchema @, 
-      title: []
-      content: []
+    ReactiveSchema @, schema
 ```
 
 ## Schema Object
