@@ -13,7 +13,7 @@ Note: This api, and its dependencies are all still in flux and will be until the
 ####  Dependencies
 [ReactiveObjects](https://github.com/CMToups/meteor-reactive-objects) [![Build Status](https://travis-ci.org/CMToups/meteor-reactive-objects.png)](https://travis-ci.org/CMToups/meteor-reactive-objects)
 <br>
-[Validity](https://github.com/CMToups/meteor-validity) [![Build Status](https://travis-ci.org/CMToups/meteor-validity.png)](https://travis-ci.org/CMToups/meteor-validity) - Can be made a weak dependance on request.
+[Validity](https://github.com/CMToups/meteor-validity) [![Build Status](https://travis-ci.org/CMToups/meteor-validity.png)](https://travis-ci.org/CMToups/meteor-validity) - Can be made a weak dependency on request.
 
 ## Instantiation
 
