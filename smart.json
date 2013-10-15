@@ -6,7 +6,10 @@
   "version": "0.0.1",
   "git": "https://github.com/CMToups/meteor-reactive-schema.git",
   "packages": {
-    "reactive-objects": {},
+    "reactive-objects": {
+      "git": "https://github.com/CMToups/meteor-reactive-objects.git"
+      "branch": "testing"
+    },
     "validity": {}
   }
 }
