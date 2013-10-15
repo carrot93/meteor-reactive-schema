@@ -7,7 +7,7 @@
   "git": "https://github.com/CMToups/meteor-reactive-schema.git",
   "packages": {
     "reactive-objects": {
-      "git": "https://github.com/CMToups/meteor-reactive-objects.git"
+      "git": "https://github.com/CMToups/meteor-reactive-objects.git",
       "branch": "testing"
     },
     "validity": {}
