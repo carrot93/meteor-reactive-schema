@@ -91,4 +91,8 @@ Assuming `Template.example.post = post`
 
 ```
 
+#### If you're so inclined
+[![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/0.1.0/dist/gittip.png)](https://www.gittip.com/cmtoups/)
+
+
 
