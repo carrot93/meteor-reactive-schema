@@ -13,7 +13,8 @@ ReactiveSchema = (obj, schema) ->
   #set up core frame
   obj._reactiveSchema = {}
   obj._reactiveSchema.changedLog = {}
-  obj._reactiveSchema.changedDeps = {}
+  obj._reactiveSchema.schemaDeps = {}
+  obj._reactiveSchema.schemaProperties = {}
 
   #do work
   ReactiveObjects.setProperties(obj, _.keys(schema)) 
@@ -25,11 +26,11 @@ ReactiveSchema = (obj, schema) ->
 
 setupValid = (obj, schema) ->
   backendProp(obj, 'valid')
-  obj._reactiveSchema.schemaDeps = 
+  backendProp(obj, 'validationMessages')
+  obj._reactiveSchema.schemaDeps.schema =
     Deps.autorun () -> validatate(obj, schema)  
 
 setupValidationMessages = (obj, schema) ->
-  backendProp(obj, 'validationMessages')
 
 setupChangedLog = (obj, schema) ->
   backendProp(obj, 'changed')
@@ -41,12 +42,14 @@ validatate = (obj, schema) ->
   #New validation, define or reset vars
 
   # innocent until proven guilty
-  obj.valid = true
+  obj._reactiveSchema.schemaProperties.valid = true
+  obj._reactiveSchema.schemaDeps.valid.changed()
 
   # Not a huge fan of this kind of reset but sub props were persisting
-  delete obj.validationMessages
+  delete obj._reactiveSchema.schemaProperties.validationMessages
   # this reset lets users test for bad property via `if obj.validationMessages.property`
-  obj.validationMessages = {}
+  obj._reactiveSchema.schemaProperties.validationMessages = {}
+  obj._reactiveSchema.schemaDeps.validationMessages.changed()
 
   # Run each property's validation(s) functions
   for key, value of schema
@@ -73,19 +76,20 @@ validateOutput = (obj, key, output) ->
   #applied output, push the results to our 'reactive' vars
   unless output.valid #if the output is good then we don't have to do anything! GJ user.
     if obj.validationMessages[key] #if there are more then one validation functions this may already exist.
-      obj.validationMessages[key].push output.message # add the error message to the list.
+      obj._reactiveSchema.schemaProperties.validationMessages[key].push output.message # add the error message to the list.
     else #this is the first issue with this prop, possibly the only one.
-      obj.validationMessages[key] = [output.message] # add the error message. Always return an array, keeps things constant for the user.
-    obj.valid = false # we ain't valid no more.
+      obj._reactiveSchema.schemaProperties.validationMessages[key] = [output.message] # add the error message. Always return an array, keeps things constant for the user.
+    obj._reactiveSchema.schemaProperties.valid = false # we ain't valid no more.
+    obj._reactiveSchema.schemaDeps.valid.changed()
+    obj._reactiveSchema.schemaDeps.validationMessages.changed()
 
 trackChanges = (obj) ->
   for own key of ReactiveObjects.getObjectProperties(obj)
-    unless (key == 'valid') or (key == 'validationMessages')
       setupTracker(obj, key)
 
 setupTracker = (obj, key) ->
-  obj._reactiveSchema.changedDeps[key] = Deps.autorun () ->
-    obj._reactiveDeps[key + "Deps"].depend()
+  obj._reactiveSchema.schemaDeps[key] = Deps.autorun () ->
+    obj._reactiveDeps[key+'Deps'].depend()
     if not this.firstRun 
       obj._reactiveSchema.changedLog[key] = true
 
@@ -96,5 +100,9 @@ ReactiveSchema.resetChangedLog = (obj) ->
   for key of obj._reactiveSchema.changedLog
     obj._reactiveSchema.changedLog[key] = false
 
-backendProp = (obj, prop) ->
-  ReactiveObjects.setProperty(obj, prop) 
+backendProp = (obj, propName) ->
+  obj._reactiveSchema.schemaDeps[propName] = new Deps.Dependency
+  Object.defineProperty obj, propName,
+    get: () ->
+      obj._reactiveSchema.schemaDeps[propName].depend()
+      obj._reactiveSchema.schemaProperties[propName];  
