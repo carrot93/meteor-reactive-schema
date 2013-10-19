@@ -11,9 +11,9 @@ Best yet, all the validations are just functions, so it can be as simple or comp
 Note: This api, and its dependencies are all still in flux and will be until they have a full test base and are 1.0.0. 
 
 ####  Dependencies
-[ReactiveObjects](https://github.com/CMToups/meteor-reactive-objects) [![Build Status](https://travis-ci.org/CMToups/meteor-reactive-objects.png)](https://travis-ci.org/CMToups/meteor-reactive-objects)
+[ReactiveObjects](https://github.com/Meteor-Reaction/meteor-reactive-objects) [![Build Status](https://travis-ci.org/Meteor-Reaction/meteor-reactive-objects.png)](https://travis-ci.org/Meteor-Reaction/meteor-reactive-objects)
 <br>
-[Validity](https://github.com/CMToups/meteor-validity) [![Build Status](https://travis-ci.org/CMToups/meteor-validity.png)](https://travis-ci.org/CMToups/meteor-validity) - Can be made a weak dependency on request.
+[Validity](https://github.com/Meteor-Reaction/meteor-validity) [![Build Status](https://travis-ci.org/Meteor-Reaction/meteor-validity.png)](https://travis-ci.org/Meteor-Reaction/meteor-validity)
 
 ## Instantiation
 
