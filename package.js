@@ -4,7 +4,7 @@ Package.describe({
 
 Package.on_use(function (api, where) {
   if(api.export) {
-    api.use(['coffeescript', 'reactive-objects', 'validity'], ['client', 'server']);
+    api.use(['coffeescript', 'underscore', 'reactive-objects', 'validity'], ['client', 'server']);
     api.export('ReactiveSchema', ['client', 'server']);
     api.imply('validity', ['client', 'server'])
   }
