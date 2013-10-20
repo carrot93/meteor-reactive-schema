@@ -44,7 +44,7 @@ Tinytest.add('ReactiveSchema - public api - message reacts to the schema', funct
   schema = { title: [isTrue] }
   ReactiveSchema(obj, schema)
   test.isFalse(obj.validationMessages.hasOwnProperty('title') ,'should return false')
-
+  
   //invalid objects should have a invalidation reason message
   obj = {}
   schema = { title: [isFalse] }
