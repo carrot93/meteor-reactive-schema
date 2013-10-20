@@ -1,4 +1,4 @@
-Warning: Do not use the dev branch right now. Something in the tests is triggering an infinite loop and I have not be able to find out why!
+Warning: Do not use the dev branch right now. Invalid validations are triggering an infinite loop!
 
 
 ReactiveSchema
