@@ -1,4 +1,4 @@
-Warning: Do not use the dev branch right now. Invalid validations are triggering an infinite loop!
+Warning: Massive backend changes in dev. API has not changed but you should look at the dev branch anyway.
 
 
 ReactiveSchema
