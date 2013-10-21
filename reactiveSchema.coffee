@@ -12,23 +12,19 @@ ReactiveSchema = (obj, schema) ->
   # obj.changed -- (boolean) has any props changed since instantiation?
   
   #set up core frame
-  obj._reactiveSchema = {}
-  obj._reactiveSchema.changedLog = {}
-  obj._reactiveSchema.schemaDeps = {}
-  obj._reactiveSchema.schemaProperties = {}
-  
+  obj._reactiveSchema = 
+    changedLog: {}
+    validLog: {}
+
   #schema properties setup.
-  backendProp(obj, 'valid') #one way var, getter only
-  obj._reactiveSchema.schemaProperties.valid = true #assume the object is valid before instantiation validations
-  obj._reactiveSchema.schemaProperties.validLog = {}
-  backendProp(obj, 'validationMessages') #one way var, getter only
-  obj._reactiveSchema.schemaProperties.validationMessages = {}
-  backendProp(obj, 'changed') #one way var, getter only
-  obj._reactiveSchema.schemaProperties.changed = false #the object is new and is not changed
+  backendProperties(obj, ['valid', 'validationMessages', 'changed']) #one way vars, getter only
+  obj._reactiveProperties =
+    valid: true #assume the object is valid before instantiation validations
+    validationMessages: {}
+    changed: false #the object is new and is not changed
 
   #track changes for each property and if changed run validations and update object as needed.
   setProperty(obj, property, validationFunctions) for property, validationFunctions of schema
-  #obj._reactiveSchema.schemaDeps.schema = Deps.autorun () -> validatate(obj, schema)    
   
 
   obj #end cleanly
@@ -51,42 +47,26 @@ setProperty = (obj, key, validationFunctions) ->
   ReactiveObjects.setProperty obj, key, overriedObj # sets up properties on the object
 
 configValidation = (key, value, obj) ->
-  console.log obj[key]
-  #Is this an array of functions?
   if value instanceof Array
-    #Ho boy, we have some multi-validation going on here.
     for func in value
-      #pass in the core object as this and give the key...
       output = func.call(obj, key)
       validateOutput(obj, key, output)
-  #No, there is only one validation function.
   else
-    #pass in the core object as this and give the key...
     output = value.call(obj,key)
     validateOutput(obj, key, output)
   return output
 
 validateOutput = (obj, key, output) ->
-  delete obj._reactiveSchema.schemaProperties.validationMessages[key] 
-  #applied output, push the results to our 'reactive' vars
   if output.valid 
-    obj._reactiveSchema.schemaProperties.validLog[key] = true
+    obj._reactiveSchema.validLog[key] = true
   else
     if obj.validationMessages[key] #if there are more then one validation functions this may already exist.
-      obj._reactiveSchema.schemaProperties.validationMessages[key].push output.message # add the error message to the list.
+      obj._reactiveProperties.validationMessages[key].push output.message 
     else #this is the first issue with this prop, possibly the only one.
-      obj._reactiveSchema.schemaProperties.validationMessages[key] = [output.message] # add the error message. Always return an array, keeps things constant for the user.
-    obj._reactiveSchema.schemaProperties.validLog[key] = false # we ain't valid no more.
+      obj._reactiveProperties.validationMessages[key] = [output.message] # add the error message. Always return an array, keeps things consistent for the user.
+    obj._reactiveSchema.validLog[key] = false 
   updateValidLog(obj)
-
-setupChangeTracker = (obj, key, schema) ->
-  validationFunctions = schema[key]
-  obj._reactiveSchema.schemaDeps[key+'ChangeTracker'] = Deps.autorun () ->
-    
-    obj._reactiveDeps[key+'Deps'].depend() #we depend on this property's Deps 
-    configValidation(key, validationFunctions, obj)
-    if not this.firstRun 
-      obj._reactiveSchema.changedLog[key] = true
+  updateChangedLog(obj)
 
 ReactiveSchema.changedLog = (obj) -> 
   obj._reactiveSchema.changedLog
@@ -95,18 +75,28 @@ ReactiveSchema.resetChangedLog = (obj) ->
   for key of obj._reactiveSchema.changedLog
     obj._reactiveSchema.changedLog[key] = false
 
-backendProp = (obj, propName) ->
-  obj._reactiveSchema.schemaDeps[propName] = new Deps.Dependency
-  Object.defineProperty obj, propName,
-    get: () ->
-      obj._reactiveSchema.schemaDeps[propName].depend()
-      obj._reactiveSchema.schemaProperties[propName];  
+backendProperties = (obj, properties) ->
+  for property in properties
+    overrideObj = {} #reactiveObjects mixin functions
+    overrideObj.beforeSet = (obj, value) -> 
+      return false
+    overrideObj.afterSet = (obj, value) -> 
+    ReactiveObjects.setProperty obj, property, overrideObj
 
 updateValidLog = (obj) ->
-  valids = _.values(obj._reactiveSchema.schemaProperties.validLog)
+  valids = _.values(obj._reactiveSchema.validLog)
   if _.contains(valids, false) 
-   obj._reactiveSchema.schemaProperties.valid = false
-   obj._reactiveSchema.schemaDeps.valid.changed()
+   obj._reactiveProperties.valid = false
+   obj._reactiveDeps.validDeps.changed()
   else
-    obj._reactiveSchema.schemaProperties.valid = true
-    obj._reactiveSchema.schemaDeps.valid.changed()
+    obj._reactiveProperties.valid = true
+    obj._reactiveDeps.validDeps.changed()
+
+updateChangedLog = (obj) ->
+  changes = _.values(obj._reactiveSchema.changedLog)
+  if _.contains(changes, true) 
+    obj._reactiveProperties.changed = true
+    obj._reactiveDeps.changedDeps.changed()
+  else
+    obj._reactiveProperties.changed = false
+    obj._reactiveDeps.changedDeps.changed()
