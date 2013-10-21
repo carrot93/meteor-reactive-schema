@@ -11,52 +11,57 @@ ReactiveSchema = (obj, schema) ->
   # obj.validationMessages -- object containing arrays of error messages, same layout as schema 
   # obj.changed -- (boolean) has any props changed since instantiation?
   
-  #set up core frame
+  #set up core frame, these allow for arrogation
   obj._reactiveSchema = 
     changedLog: {}
     validLog: {}
 
-  #schema properties setup.
+  #schema properties setup, sets the object default values
   backendProperties(obj, ['valid', 'validationMessages', 'changed']) #one way vars, getter only
-  obj._reactiveProperties =
-    valid: true #assume the object is valid before instantiation validations
+  obj._reactiveProperties = #effectively the only setter.
+    valid: true
     validationMessages: {}
-    changed: false #the object is new and is not changed
+    changed: false
 
   #track changes for each property and if changed run validations and update object as needed.
   setProperty(obj, property, validationFunctions) for property, validationFunctions of schema
   
-
-  obj #end cleanly
+  obj #its good form to end cleanly
 
 setProperty = (obj, key, validationFunctions) ->
   firstRun = {} 
   firstRun[key] = true #first-run, test on a key basis
   overriedObj = {} #reactiveObjects mixin functions
+
+  #track if value has changed after instantiation. (useful for db updating)
   overriedObj.beforeSet = (obj, value) -> 
-    if firstRun[key] #if is first run, turn of first-run var and continue
+    if firstRun[key] #if is first run, turn off first-run var and continue
       firstRun[key] = false
       return true
     else if obj._reactiveProperties[key] != value #if not first run and value is not changed, stop!
       obj._reactiveSchema.changedLog[key] = true #if value is changed, fire changed and continue
+      updateChangedLog(obj)
       return true
-    return false
-  overriedObj.afterSet = (obj, value) -> 
-      configValidation(key, validationFunctions, obj)
+    return false #not first run or new value. Don't continue. (would cause needless deps calls)
 
-  ReactiveObjects.setProperty obj, key, overriedObj # sets up properties on the object
+  #call the actual validation after the value gets set. 
+  overriedObj.afterSet = (obj, value) -> validations(key, validationFunctions, obj)
 
-configValidation = (key, value, obj) ->
+  #Setup done, do your work O' mighty Reactive Object! (end of instantiation)
+  ReactiveObjects.setProperty obj, key, overriedObj 
+
+validations = (key, value, obj) ->
   if value instanceof Array
     for func in value
-      output = func.call(obj, key)
-      validateOutput(obj, key, output)
+      output = func.call(Validity, obj, key)
+      distributeOutput(obj, key, output)
   else
-    output = value.call(obj,key)
-    validateOutput(obj, key, output)
+    output = value.call(Validity, obj,key)
+    distributeOutput(obj, key, output)
   return output
 
-validateOutput = (obj, key, output) ->
+distributeOutput = (obj, key, output) ->
+  delete obj._reactiveProperties.validationMessages[key]
   if output.valid 
     obj._reactiveSchema.validLog[key] = true
   else
@@ -66,22 +71,6 @@ validateOutput = (obj, key, output) ->
       obj._reactiveProperties.validationMessages[key] = [output.message] # add the error message. Always return an array, keeps things consistent for the user.
     obj._reactiveSchema.validLog[key] = false 
   updateValidLog(obj)
-  updateChangedLog(obj)
-
-ReactiveSchema.changedLog = (obj) -> 
-  obj._reactiveSchema.changedLog
-
-ReactiveSchema.resetChangedLog = (obj) ->
-  for key of obj._reactiveSchema.changedLog
-    obj._reactiveSchema.changedLog[key] = false
-
-backendProperties = (obj, properties) ->
-  for property in properties
-    overrideObj = {} #reactiveObjects mixin functions
-    overrideObj.beforeSet = (obj, value) -> 
-      return false
-    overrideObj.afterSet = (obj, value) -> 
-    ReactiveObjects.setProperty obj, property, overrideObj
 
 updateValidLog = (obj) ->
   valids = _.values(obj._reactiveSchema.validLog)
@@ -100,3 +89,11 @@ updateChangedLog = (obj) ->
   else
     obj._reactiveProperties.changed = false
     obj._reactiveDeps.changedDeps.changed()
+
+backendProperties = (obj, properties) ->
+  for property in properties
+    overrideObj = {} #reactiveObjects mixin functions
+    overrideObj.beforeSet = (obj, value) -> 
+      return false
+    overrideObj.afterSet = (obj, value) -> 
+    ReactiveObjects.setProperty obj, property, overrideObj

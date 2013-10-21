@@ -1,0 +1,25 @@
+{
+  "meteor": {},
+  "dependencies": {
+    "basePackages": {
+      "reactive-schema": {
+        "path": "."
+      }
+    },
+    "packages": {
+      "reactive-schema": {
+        "path": "."
+      },
+      "reactive-objects": {
+        "git": "https://github.com/Meteor-Reaction/meteor-reactive-objects.git",
+        "branch": "dev",
+        "commit": "7bcfd5af52f5816b2e71a6527c7c3bbea7dbc822"
+      },
+      "validity": {
+        "git": "https://github.com/Meteor-Reaction/meteor-validity.git",
+        "tag": "v0.1.1",
+        "commit": "c9a714262b1027ec12d15a5099f67cf971477de7"
+      }
+    }
+  }
+}

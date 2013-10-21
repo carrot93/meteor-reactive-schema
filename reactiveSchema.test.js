@@ -52,12 +52,23 @@ Tinytest.add('ReactiveSchema - public api - message reacts to the schema', funct
   test.equal(obj.validationMessages.title[0], 'message' ,'should return the invalidation reason message')
 });
 
+//changed
+Tinytest.add('ReactiveSchema - public api - changed shows that the object has changed', function(test) {
+  obj = {}
+  schema = { title: [] }
+  ReactiveSchema(obj, schema)
+  test.isFalse(obj.changed, 'should return no changes')
+  obj.title = 'test'
+  Deps.flush()
+  test.isTrue(obj.changed, 'should return a change')
+});
+
 //changedLog
 Tinytest.add('ReactiveSchema - public api - changedLog shows which properties have changed', function(test) {
   obj = {}
   schema = { title: [] }
   ReactiveSchema(obj, schema)
-  test.equal(ReactiveSchema.changedLog(obj), {title: false}, 'should return no changes')
+  test.equal(ReactiveSchema.changedLog(obj), {}, 'should return no changes')
   obj.title = 'test'
   Deps.flush()
   test.equal(ReactiveSchema.changedLog(obj), {title: true}, 'should return a change')
@@ -73,6 +84,6 @@ Tinytest.add('ReactiveSchema - public api - resetChangedLog sets all change log 
   test.equal(ReactiveSchema.changedLog(obj), {title: true}, 'should return a change')
   ReactiveSchema.resetChangedLog(obj)
   Deps.flush()
-  test.equal(ReactiveSchema.changedLog(obj), {title: false}, 'should return no changes')
+  test.equal(ReactiveSchema.changedLog(obj), {}, 'should return no changes')
 });
 
