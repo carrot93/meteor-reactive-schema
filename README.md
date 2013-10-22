@@ -1,7 +1,7 @@
 Warning: Massive backend changes in dev. API has not changed but you should look at the dev branch anyway.
 
 
-ReactiveSchema
+ReactiveSchema [![Build Status](https://travis-ci.org/Meteor-Reaction/meteor-reactive-schema.png)](https://travis-ci.org/Meteor-Reaction/meteor-reactive-schema)
 ======================
 
 #### Philosophy: You don't call schema, schema calls you. 
@@ -14,9 +14,11 @@ Best yet, all the validations are just functions, so it can be as simple or comp
 Note: This api, and its dependencies are all still in flux and will be until they have a full test base and are 1.0.0. 
 
 ####  Dependencies
-[ReactiveObjects](https://github.com/Meteor-Reaction/meteor-reactive-objects) [![Build Status](https://travis-ci.org/Meteor-Reaction/meteor-reactive-objects.png)](https://travis-ci.org/Meteor-Reaction/meteor-reactive-objects)
+[![Build Status](https://travis-ci.org/Meteor-Reaction/meteor-reactive-objects.png)](https://travis-ci.org/Meteor-Reaction/meteor-reactive-objects)
+[ReactiveObjects](https://github.com/Meteor-Reaction/meteor-reactive-objects)
 <br>
-[Validity](https://github.com/Meteor-Reaction/meteor-validity) [![Build Status](https://travis-ci.org/Meteor-Reaction/meteor-validity.png)](https://travis-ci.org/Meteor-Reaction/meteor-validity)
+[![Build Status](https://travis-ci.org/Meteor-Reaction/meteor-validity.png)](https://travis-ci.org/Meteor-Reaction/meteor-validity)
+[Validity](https://github.com/Meteor-Reaction/meteor-validity) 
 
 ## Instantiation
 
@@ -60,23 +62,34 @@ schema = {
 ```
 ### Validation objects
 
-  Note: this is most likely going to change, I think it has a smell.
-
 These are any functions which return `Validity.allow()` or `Validity.deny()`. 
 Check out [Validity](https://github.com/CMToups/meteor-validity)  for more details.
 
-Validity, in this package, api : `function (property) {}`
+Validity api (in this package): `function (object, property) {}`
 
-The `this` context is that of your calling object. 
-This so you can get any of the keys values if you wish to test for there existence.
+There are currenly two ways to write validation functions:
+
+* 1 For maximum reusability, you can manually include Validity in you project. 
+  You can then uses these like any other Validity function.
+
+* 2 You can opt out of using Validity and use these functions with just ReactiveSchema.
+  The `this` context is Validity itself. So you can call `this.allow()` and `this.deny()`
+  Naturally these functions will throw an exception if used outside of the schema.
+
+
+The inbound `object` var is the object being validated.
 The inbound `property` var is the name of the key of the property being tested.
-You can get the value of the property being tested with `this[property]`
 
-An example function:
-```coffee
-isString = (property) ->
-  unless _.isString(this[property]) then return Validity.deny('must be a string')
-  Validity.allow()
+You can get the value of the property being tested with `object[property]`.
+
+An example function (with underscore):
+```javascript
+isString = function (object, property) {
+  if (!_.isString(object[property])) 
+    return Validity.deny('must be a string')
+  else
+    return Validity.allow()
+}
 ```
 
 ### Handlebars example
@@ -93,6 +106,10 @@ Assuming `Template.example.post = post`
 {{/unless}}
 
 ```
+
+### ChangeLog
+
+* v0.1.0: Validation functions have completely change from its old smelly style
 
 #### If you're so inclined
 [![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/0.1.0/dist/gittip.png)](https://www.gittip.com/cmtoups/)
