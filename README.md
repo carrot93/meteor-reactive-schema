@@ -1,6 +1,3 @@
-Warning: Massive backend changes in dev. API has not changed but you should look at the dev branch anyway.
-
-
 ReactiveSchema [![Build Status](https://travis-ci.org/Meteor-Reaction/meteor-reactive-schema.png)](https://travis-ci.org/Meteor-Reaction/meteor-reactive-schema)
 ======================
 
