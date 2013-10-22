@@ -13,7 +13,7 @@ Package.on_use(function (api, where) {
 Package.on_test(function(api) {
 
   api.use('reactive-schema');
-  api.use(['tinytest'], ['client', 'server']);
+  api.use(['tinytest', 'validity', 'reactive-objects'], ['client', 'server']);
 
   api.add_files('reactiveSchema.test.js', ['client', 'server']);
 });

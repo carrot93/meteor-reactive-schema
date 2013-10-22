@@ -34,18 +34,12 @@ setProperty = (obj, key, validationFunctions) ->
   overriedObj = {} #reactiveObjects mixin functions
 
   #track if value has changed after instantiation. (useful for db updating)
-  overriedObj.beforeSet = (obj, value) -> 
-    if firstRun[key] #if is first run, turn off first-run var and continue
-      firstRun[key] = false
-      return true
-    else if obj._reactiveProperties[key] != value #if not first run and value is not changed, stop!
+  overriedObj.set = () -> 
+    if firstRun[key] then firstRun[key] = false #if is first run, turn off first-run var and continue
+    else if this.oldValue != this.value #if not first run and value is not changed, stop!
       obj._reactiveSchema.changedLog[key] = true #if value is changed, fire changed and continue
       updateChangedLog(obj)
-      return true
-    return false #not first run or new value. Don't continue. (would cause needless deps calls)
-
-  #call the actual validation after the value gets set. 
-  overriedObj.afterSet = (obj, value) -> validations(key, validationFunctions, obj)
+    validations(key, validationFunctions, obj)
 
   #Setup done, do your work O' mighty Reactive Object! (end of instantiation)
   ReactiveObjects.setProperty obj, key, overriedObj 
@@ -93,7 +87,5 @@ updateChangedLog = (obj) ->
 backendProperties = (obj, properties) ->
   for property in properties
     overrideObj = {} #reactiveObjects mixin functions
-    overrideObj.beforeSet = (obj, value) -> 
-      return false
-    overrideObj.afterSet = (obj, value) -> 
+    overrideObj.set = (obj, value) -> @stop = true
     ReactiveObjects.setProperty obj, property, overrideObj

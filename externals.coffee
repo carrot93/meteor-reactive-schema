@@ -1,4 +1,3 @@
-#move to new file
 ReactiveSchema.changedLog = (obj) -> 
   obj._reactiveSchema.changedLog
 

@@ -6,10 +6,7 @@
   "version": "0.1.0",
   "git": "https://github.com/Meteor-Reaction/meteor-reactive-schema.git",
   "packages": {
-    "reactive-objects": {
-      "git": "https://github.com/Meteor-Reaction/meteor-reactive-objects.git",
-      "branch": "dev"
-      },
+    "reactive-objects": {},
     "validity": {}
   }
 }
