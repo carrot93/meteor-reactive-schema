@@ -111,9 +111,10 @@ isString = function (object, property) {
 #### ReactiveSchema.changedLog(object)
   * Returns and object with all the properties in the schema. 
     The properties will be true if they have changed or false if they have not.
+    object.changed will be set to true if any of these properties are true.
 
-#### ReactiveSchema.resetChangedLog(obj)
-  * Sets all the properties in the changedLog to false. 
+#### ReactiveSchema.resetChangedLog(object)
+  * Sets all the properties in the changedLog to false; object.changed will become false if it is not already.
 
 ### Handlebars example
 Assuming `Template.example.post = post`
