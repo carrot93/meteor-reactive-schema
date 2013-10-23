@@ -6,6 +6,7 @@ This is a validation pattern that imbeds itself under your objects via [Reactive
 Unlike most schemas the validation is reactive. 
 Just white-list your properties and listen to the reactive `object.valid` method. 
 ReactiveSchema will also return reasons why the property is invalid. 
+You can use it on both the server and the client, and it can extend existing objects or create new ones.
 Best yet, all the validations are just functions, so it can be as simple or complex as you need them to be.
 
 Note: This api, and its dependencies are all still in flux and will be until they have a full test base and are 1.0.0. 
@@ -88,6 +89,31 @@ isString = function (object, property) {
     return Validity.allow()
 }
 ```
+### API 
+
+#### ReactiveSchema( object, schema )
+  Used to create or extend objects with the reactive schema. 
+  
+  The resulting object have the following additional reactive properties.
+
+* object.valid
+  * If all the schema functions are passing it will return true, else it returns false.
+
+* object.validationMessages
+  * Returns an object. If there are no issue with validation it returns an empty object ( {} ).
+    Each property that is invalid will be a property of this object.
+    Each property will be an array of strings. Each string is an issue with the property, 
+    these strings are returned from Validity.
+
+* object.changed
+  * If any of the properties in the schema have change this will be true, else it returns false
+
+#### ReactiveSchema.changedLog(object)
+  * Returns and object with all the properties in the schema. 
+    The properties will be true if they have changed or false if they have not.
+
+#### ReactiveSchema.resetChangedLog(obj)
+  * Sets all the properties in the changedLog to false. 
 
 ### Handlebars example
 Assuming `Template.example.post = post`
