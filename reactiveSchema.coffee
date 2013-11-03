@@ -31,10 +31,10 @@ ReactiveSchema = (obj, schema) ->
 setProperty = (obj, key, validationFunctions) ->
   firstRun = {} 
   firstRun[key] = true #first-run, test on a key basis
-  overriedObj = {} #reactiveObjects mixin functions
+  overrideObj = {} #reactiveObjects mixin functions
 
   #track if value has changed after instantiation. (useful for db updating)
-  overriedObj.set = () -> 
+  overrideObj.set = () -> 
     if firstRun[key] then firstRun[key] = false #if is first run, turn off first-run var and continue
     else if this.oldValue != this.value #if not first run and value is not changed, stop!
       obj._reactiveSchema.changedLog[key] = true #if value is changed, fire changed and continue
@@ -42,7 +42,7 @@ setProperty = (obj, key, validationFunctions) ->
     validations(key, validationFunctions, obj)
 
   #Setup done, do your work O' mighty Reactive Object! (end of instantiation)
-  ReactiveObjects.setProperty obj, key, overriedObj 
+  ReactiveObjects.setProperty obj, key, overrideObj 
 
 validations = (key, value, obj) ->
   if value instanceof Array
@@ -59,7 +59,7 @@ distributeOutput = (obj, key, output) ->
   if output.valid 
     obj._reactiveSchema.validLog[key] = true
   else
-    if obj.validationMessages[key] #if there are more then one validation functions this may already exist.
+    if obj._reactiveProperties.validationMessages[key] #if there are more then one validation functions this may already exist.
       obj._reactiveProperties.validationMessages[key].push output.message 
     else #this is the first issue with this prop, possibly the only one.
       obj._reactiveProperties.validationMessages[key] = [output.message] # add the error message. Always return an array, keeps things consistent for the user.
