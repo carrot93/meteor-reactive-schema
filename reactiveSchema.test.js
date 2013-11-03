@@ -52,6 +52,23 @@ Tinytest.add('ReactiveSchema - public api - message reacts to the schema', funct
   test.equal(obj.validationMessages.title[0], 'message' ,'should return the invalidation reason message')
 });
 
+//message should not effect properties
+Tinytest.add('ReactiveSchema - public api - message should not effect properties', function(test) {
+  //valid objects should not have a invalidation reason message
+  obj = {title: 'value'}
+  schema = { title: [isTrue] }
+  ReactiveSchema(obj, schema)
+  test.isFalse(obj.validationMessages.hasOwnProperty('title') ,'should return false')
+  test.equal(obj.title, 'value','property should remain uneffected')
+  
+  //invalid objects should have a invalidation reason message
+  obj = {title: 'value'}
+  schema = { title: [isFalse] }
+  ReactiveSchema(obj, schema)
+  test.equal(obj.validationMessages.title[0], 'message' ,'should return the invalidation reason message')
+  test.equal(obj.title, 'value','property should remain uneffected')
+});
+
 //changed
 Tinytest.add('ReactiveSchema - public api - changed shows that the object has changed', function(test) {
   obj = {}
