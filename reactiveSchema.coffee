@@ -35,22 +35,23 @@ setProperty = (obj, key, validationFunctions) ->
 
   #track if value has changed after instantiation. (useful for db updating)
   overrideObj.set = () -> 
+    self = this
     if firstRun[key] then firstRun[key] = false #if is first run, turn off first-run var and continue
     else if this.oldValue != this.value #if not first run and value is not changed, stop!
       obj._reactiveSchema.changedLog[key] = true #if value is changed, fire changed and continue
       updateChangedLog(obj)
-    validations(key, validationFunctions, obj)
+    validations(self, validationFunctions, key, obj)
 
   #Setup done, do your work O' mighty Reactive Object! (end of instantiation)
   ReactiveObjects.setProperty obj, key, overrideObj 
 
-validations = (key, value, obj) ->
-  if value instanceof Array
-    for func in value
-      output = func.call(Validity, obj, key)
+validations = (self, validations, key, obj) ->
+  if validations instanceof Array
+    for func in validations
+      output = func.call(Validity, self.value, key, obj)
       distributeOutput(obj, key, output)
   else
-    output = value.call(Validity, obj,key)
+    output = validations.call(Validity, self.value, key, obj)
     distributeOutput(obj, key, output)
   return output
 
