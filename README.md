@@ -63,7 +63,7 @@ schema = {
 These are any functions which return `Validity.allow()` or `Validity.deny()`. 
 Check out [Validity](https://github.com/CMToups/meteor-validity)  for more details.
 
-Validity api (in this package): `function (object, property) {}`
+Validity api (in this package): `function (value, property, object) {}`
 
 There are currenly two ways to write validation functions:
 
@@ -74,16 +74,14 @@ There are currenly two ways to write validation functions:
   The `this` context is Validity itself. So you can call `this.allow()` and `this.deny()`
   Naturally these functions will throw an exception if used outside of the schema.
 
-
-The inbound `object` var is the object being validated.
-The inbound `property` var is the name of the key of the property being tested.
-
-You can get the value of the property being tested with `object[property]`.
+The inbound `value` attribute is the value to be validated.
+The inbound `property` attribute is the name of the key of the property being tested.
+The inbound `object` attribute is the object being validated, can be used to set up dependancies.
 
 An example function (with underscore):
 ```javascript
-isString = function (object, property) {
-  if (!_.isString(object[property])) 
+isString = function (value, property, obj) {
+  if (!_.isString(value)) 
     return Validity.deny('must be a string')
   else
     return Validity.allow()
@@ -132,7 +130,7 @@ Assuming `Template.example.post = post`
 ```
 
 ### ChangeLog
-
+* v0.2.0: Validation api has changed inbound attributes
 * v0.1.0: Validation functions have completely change from its old smelly style
 
 #### If you're so inclined
