@@ -34,24 +34,23 @@ setProperty = (obj, key, validationFunctions) ->
   overrideObj = {} #reactiveObjects mixin functions
 
   #track if value has changed after instantiation. (useful for db updating)
-  overrideObj.set = () -> 
-    self = this
+  overrideObj.set = (setter) -> 
     if firstRun[key] then firstRun[key] = false #if is first run, turn off first-run var and continue
-    else if this.oldValue != this.value #if not first run and value is not changed, stop!
+    else if setter.oldValue != setter.value #if not first run and value is not changed, stop!
       obj._reactiveSchema.changedLog[key] = true #if value is changed, fire changed and continue
       updateChangedLog(obj)
-    validations(self, validationFunctions, key, obj)
+    validations(setter, validationFunctions, key, obj)
 
   #Setup done, do your work O' mighty Reactive Object! (end of instantiation)
   ReactiveObjects.setProperty obj, key, overrideObj 
 
-validations = (self, validations, key, obj) ->
+validations = (setter, validations, key, obj) ->
   if validations instanceof Array
     for func in validations
-      output = func.call(Validity, self.value, key, obj)
+      output = func.call(Validity, setter.value, key, obj)
       distributeOutput(obj, key, output)
   else
-    output = validations.call(Validity, self.value, key, obj)
+    output = validations.call(Validity, setter.value, key, obj)
     distributeOutput(obj, key, output)
   return output
 
@@ -88,5 +87,5 @@ updateChangedLog = (obj) ->
 backendProperties = (obj, properties) ->
   for property in properties
     overrideObj = {} #reactiveObjects mixin functions
-    overrideObj.set = (obj, value) -> @stop = true
+    overrideObj.set = (setter) -> setter.stop = true
     ReactiveObjects.setProperty obj, property, overrideObj
