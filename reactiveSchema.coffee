@@ -89,3 +89,11 @@ backendProperties = (obj, properties) ->
     overrideObj = {} #reactiveObjects mixin functions
     overrideObj.set = (setter) -> setter.stop = true
     ReactiveObjects.setProperty obj, property, overrideObj
+
+
+ReactiveSchema.changedLog = (obj) -> 
+  obj._reactiveSchema.changedLog
+
+ReactiveSchema.resetChangedLog = (obj) ->
+  obj._reactiveSchema.changedLog = {}
+  updateChangedLog(obj)

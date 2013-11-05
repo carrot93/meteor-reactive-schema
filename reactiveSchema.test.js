@@ -102,5 +102,6 @@ Tinytest.add('ReactiveSchema - public api - resetChangedLog sets all change log 
   ReactiveSchema.resetChangedLog(obj)
   Deps.flush()
   test.equal(ReactiveSchema.changedLog(obj), {}, 'should return no changes')
+  test.isFalse(obj.changed, 'obj should not show changed')
 });
 
