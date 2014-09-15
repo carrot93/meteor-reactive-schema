@@ -1,6 +1,8 @@
 ReactiveSchema [![Build Status](https://travis-ci.org/Meteor-Reaction/meteor-reactive-schema.png)](https://travis-ci.org/Meteor-Reaction/meteor-reactive-schema)
 ======================
 
+##### I have not updated this in a while, changes are in the workes!
+
 #### Philosophy: You don't call schema, schema calls you. 
 This is a validation pattern that imbeds itself under your objects via [ReactiveObjects](https://github.com/CMToups/meteor-reactive-objects).
 Unlike most schemas the validation is reactive. 
@@ -134,7 +136,7 @@ Assuming `Template.example.post = post`
 * v0.1.0: Validation functions have completely change from its old smelly style
 
 #### If you're so inclined
-[![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/0.1.0/dist/gittip.png)](https://www.gittip.com/cmtoups/)
+[![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/0.1.0/dist/gittip.png)](https://gratipay.com/Kestanous/)
 
 
 
