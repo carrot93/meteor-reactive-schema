@@ -1,7 +1,7 @@
 ReactiveSchema [![Build Status](https://travis-ci.org/Meteor-Reaction/meteor-reactive-schema.png)](https://travis-ci.org/Meteor-Reaction/meteor-reactive-schema)
 ======================
 
-##### I have not updated this in a while, but changes are in the works!
+##### I have not updated this in a while~~, but changes are in the works!~~
 
 #### Philosophy: You don't call schema, schema calls you. 
 This is a validation pattern that imbeds itself under your objects via [ReactiveObjects](https://github.com/CMToups/meteor-reactive-objects).
